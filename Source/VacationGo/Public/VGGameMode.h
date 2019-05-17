@@ -1,6 +1,6 @@
 /* VGGameMode.h
  * Description : 게임의 규칙을 관리하는 게임모드
- * ver 0.1 : 게임모드 초기 구성 - 이 창 재
+ * ver 0.1 : 게임모드 구성 - 이 창 재
  */
 
 #pragma once
@@ -22,12 +22,12 @@ class VACATIONGO_API AVGGameMode : public AGameModeBase
 public:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-//	void AddScore(class AVGPlayerController *Player);
+	void AddScore(class AVGPlayerController *Player);
 //	int32 GetScore() const;
-//
-//private:
-//	UPROPERTY()
-//	class AVGGameState* VGGameState;
+
+private:
+	UPROPERTY()
+	class AVGGameState* VGGameState;
 //
 //	UPROPERTY()
 //	int32 ScoreToClear;

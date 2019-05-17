@@ -11,7 +11,9 @@
  * ver 0.8 : NPC 구현을 위한 AI 컨트롤러 연결 - 이 창 재
  * ver 0.85 : NPC를 위한 동작 컨트롤 설정 - 이 창 재
  * ver 0.86 : 공격 태스크를 위한 델리게이트 구성 - 이 창 재
- * ver 0.9 : NPC 에셋 랜덤화 - 이 창 재
+ * ver 0.88 : NPC 에셋 랜덤화 - 이 창 재
+ * ver 0.9 : 각 스테이트별 기본 로직 및 함수 구현 - 이 창 재
+ * ver 0.92 : 플레이어 스테이트 반영 및 HUB에 연동 - 이 창 재
  */
 
 #include "VGCharacter.h"
@@ -24,6 +26,9 @@
 #include "VGAIController.h"
 #include "VGCharacterSetting.h"
 #include "VGGameInstance.h"
+#include "VGPlayerController.h"
+#include "VGPlayerState.h"
+#include "VGHUDWidget.h"
 
 // Sets default values
 AVGCharacter::AVGCharacter()
@@ -68,7 +73,7 @@ AVGCharacter::AVGCharacter()
 
 	ArmLengthSpeed = 3.0f;
 	ArmRotationSpeed = 10.0f;
-	GetCharacterMovement()->JumpZVelocity = 800.0f;
+	GetCharacterMovement()->JumpZVelocity = 550.0f;
 
 	IsAttacking = false;
 	MaxCombo = 4;
@@ -90,6 +95,15 @@ AVGCharacter::AVGCharacter()
 	// 생성되는 캐릭터별로 AI 컨트롤러를 배치
 	AIControllerClass = AVGAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	// 상황별 스테이트 머신 지정
+	AssetIndex = 4;
+
+	SetActorHiddenInGame(true);
+	HPBarWidget->SetHiddenInGame(true);
+	bCanBeDamaged = false;
+
+	DeadTimer = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -97,23 +111,139 @@ void AVGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	auto CharacterWidget = Cast<UVGCharacterWidget>(HPBarWidget->GetUserWidgetObject());
-	if (nullptr != CharacterWidget)
+	bIsPlayer = IsPlayerControlled();
+	if (bIsPlayer)
 	{
-		CharacterWidget->BindCharacterStat(CharacterStat);
+		VGPlayerController = Cast<AVGPlayerController>(GetController());
+		ABCHECK(nullptr != VGPlayerController);
+	}
+	else
+	{
+		VGAIController = Cast<AVGAIController>(GetController());
+		ABCHECK(nullptr != VGAIController);
 	}
 
-	if (!IsPlayerControlled())
+	auto DefaultSetting = GetDefault<UVGCharacterSetting>();
+
+	if (bIsPlayer)
 	{
-		auto DefaultSetting = GetDefault<UVGCharacterSetting>();
-		int32 RandIndex = FMath::RandRange(0, DefaultSetting->CharacterAssets.Num() - 1);
-		CharacterAssetToLoad = DefaultSetting->CharacterAssets[RandIndex];
-		auto VGGameInstance = Cast<UVGGameInstance>(GetGameInstance());
-		if (nullptr != VGGameInstance)
-		{
-			AssetStreamingHandle = VGGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad, FStreamableDelegate::CreateUObject(this, &AVGCharacter::OnAssetLoadCompleted));
-		}
+		auto VGPlayerState = Cast<AVGPlayerState>(GetPlayerState());
+		ABCHECK(nullptr != VGPlayerState);
+		AssetIndex = VGPlayerState->GetCharacterIndex();
 	}
+	else
+	{
+		AssetIndex = FMath::RandRange(0, DefaultSetting->CharacterAssets.Num() - 1);
+	}
+
+	CharacterAssetToLoad = DefaultSetting->CharacterAssets[AssetIndex];
+	auto VGGameInstance = Cast<UVGGameInstance>(GetGameInstance());
+	ABCHECK(nullptr != VGGameInstance);
+	AssetStreamingHandle = VGGameInstance->StreamableManager.RequestAsyncLoad(CharacterAssetToLoad, FStreamableDelegate::CreateUObject(this, &AVGCharacter::OnAssetLoadCompleted));
+	SetCharacterState(ECharacterState::LOADING);
+}
+
+void AVGCharacter::SetCharacterState(ECharacterState NewState)
+{
+	ABCHECK(CurrentState != NewState);
+	CurrentState = NewState;
+
+	switch (CurrentState)
+	{
+	case ECharacterState::LOADING:
+	{
+		if (bIsPlayer)
+		{
+			DisableInput(VGPlayerController);
+
+			VGPlayerController->GetHUDWidgetWithCreation()->BindCharacterStat(CharacterStat);
+
+			auto VGPlayerState = Cast<AVGPlayerState>(GetPlayerState());
+			ABCHECK(nullptr != VGPlayerState);
+			CharacterStat->SetNewLevel(VGPlayerState->GetCharacterLevel());
+		}
+		SetActorHiddenInGame(true);
+		HPBarWidget->SetHiddenInGame(true);
+		bCanBeDamaged = false;
+		break;
+	}
+	case ECharacterState::READY:
+	{
+		SetActorHiddenInGame(false);
+		HPBarWidget->SetHiddenInGame(false);
+		bCanBeDamaged = true;
+
+		CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
+			SetCharacterState(ECharacterState::DEAD);
+			});
+
+		auto CharacterWidget = Cast<UVGCharacterWidget>(HPBarWidget->GetUserWidgetObject());
+		ABCHECK(nullptr != CharacterWidget);
+		CharacterWidget->BindCharacterStat(CharacterStat);
+
+		if (bIsPlayer)
+		{
+			SetControlMode(EControlMode::GTA);
+			GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+			EnableInput(VGPlayerController);
+		}
+		else
+		{
+			SetControlMode(EControlMode::NPC);
+			GetCharacterMovement()->MaxWalkSpeed = 60.0f;
+			VGAIController->RunAI();
+		}
+
+		break;
+	}
+	case ECharacterState::DEAD:
+	{
+		SetActorEnableCollision(false);
+		GetMesh()->SetHiddenInGame(false);
+		HPBarWidget->SetHiddenInGame(true);
+		VGAnim->SetDeadAnim();
+		bCanBeDamaged = false;
+
+		if (bIsPlayer)
+		{
+			DisableInput(VGPlayerController);
+		}
+		else
+		{
+			VGAIController->StopAI();
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]() -> void {
+
+			if (bIsPlayer)
+			{
+				VGPlayerController->RestartLevel();
+			}
+			else
+			{
+				Destroy();
+			}
+
+			}), DeadTimer, false);
+
+		break;
+	}
+	}
+}
+
+ECharacterState AVGCharacter::GetCharacterState() const
+{
+	return CurrentState;
+}
+
+int32 AVGCharacter::GetExp() const
+{
+	return CharacterStat->GetDropExp();
+}
+
+float AVGCharacter::GetFinalAttackRange() const
+{
+	return (nullptr != CurrentWeapon) ? CurrentWeapon->GetAttackRange() : AttackRange;
 }
 
 // 컨트롤 모드 변경 기능
@@ -227,15 +357,15 @@ float AVGCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 	ABLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 	CharacterStat->SetDamage(FinalDamage);
-	//if (CurrentState == ECharacterState::DEAD)
-	//{
-	//	if (EventInstigator->IsPlayerController())
-	//	{
-	//		auto ABPlayerController = Cast<AVGPlayerController>(EventInstigator);
-	//		ABCHECK(nullptr != ABPlayerController, 0.0f);
-	//		ABPlayerController->NPCKill(this);
-	//	}
-	//}
+	if (CurrentState == ECharacterState::DEAD)
+	{
+		if (EventInstigator->IsPlayerController())
+		{
+			auto VGPlayerController = Cast<AVGPlayerController>(EventInstigator);
+			ABCHECK(nullptr != VGPlayerController, 0.0f);
+			VGPlayerController->NPCKill(this);
+		}
+	}
 
 	return FinalDamage;
 }
@@ -253,7 +383,7 @@ void AVGCharacter::PossessedBy(AController* NewController)
 	else
 	{
 		SetControlMode(EControlMode::NPC);
-		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 60.0f;
 	}
 }
 
@@ -412,15 +542,15 @@ void AVGCharacter::AttackEndComboState()
 }
 
 void AVGCharacter::AttackCheck()
-{/*
-	float FinalAttackRange = GetFinalAttackRange();*/
+{
+	float FinalAttackRange = GetFinalAttackRange();
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		HitResult,
 		GetActorLocation(),
-		GetActorLocation() + GetActorForwardVector() * AttackRange,
+		GetActorLocation() + GetActorForwardVector() * FinalAttackRange,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
 		FCollisionShape::MakeSphere(AttackRadius),
@@ -428,9 +558,9 @@ void AVGCharacter::AttackCheck()
 
 #if ENABLE_DRAW_DEBUG
 
-	FVector TraceVec = GetActorForwardVector() * AttackRange;
+	FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-	float HalfHeight = AttackRange * 0.5f + AttackRadius;
+	float HalfHeight = FinalAttackRange * 0.5f + AttackRadius;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 	float DebugLifeTime = 5.0f;
@@ -462,8 +592,8 @@ void AVGCharacter::OnAssetLoadCompleted()
 {
 	AssetStreamingHandle->ReleaseHandle();
 	TSoftObjectPtr<USkeletalMesh> LoadedAssetPath(CharacterAssetToLoad);
-	if (LoadedAssetPath.IsValid())
-	{
-		GetMesh()->SetSkeletalMesh(LoadedAssetPath.Get());
-	}
+	ABCHECK(LoadedAssetPath.IsValid());
+
+	GetMesh()->SetSkeletalMesh(LoadedAssetPath.Get());
+	SetCharacterState(ECharacterState::READY);
 }

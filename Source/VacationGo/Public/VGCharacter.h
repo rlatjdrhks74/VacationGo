@@ -9,6 +9,7 @@
  * ver 0.7 : HP바 구현
  * ver 0.85 : NPC를 위한 동작 컨트롤 설정 - 이 창 재
  * ver 0.86 : 공격 태스크를 위한 델리게이트 선언 - 이 창 재
+ * ver 0.9 : 각 스테이트별 기본 로직 및 함수 구현 - 이 창 재
  */
 
 #pragma once
@@ -27,6 +28,11 @@ class VACATIONGO_API AVGCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AVGCharacter();
+	void SetCharacterState(ECharacterState NewState);
+	ECharacterState GetCharacterState() const;
+
+	int32 GetExp() const;
+	float GetFinalAttackRange() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -126,4 +132,21 @@ private:
 	int32 AssetIndex = 0;
 	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
 	TSharedPtr<struct FStreamableHandle> AssetStreamingHandle;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+	ECharacterState CurrentState;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+	bool bIsPlayer;
+
+	UPROPERTY()
+	class AVGAIController* VGAIController;
+
+	UPROPERTY()
+	class AVGPlayerController* VGPlayerController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
+	float DeadTimer;
+
+	FTimerHandle DeadTimerHandle = { };
 };

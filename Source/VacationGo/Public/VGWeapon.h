@@ -1,6 +1,7 @@
 /* VGWeapon.h
  * Description : 캐릭터가 드는 무기에 대한 액터
  * ver 0.1 : 액터 초기 구성 - 이 창 재
+ * ver 0.2 : 무기를 장착시에 공격 범위가 증가 - 이 창 재
  */
 
 #pragma once
@@ -18,6 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	AVGWeapon();
 
+	float GetAttackRange() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,4 +29,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	USkeletalMeshComponent* Weapon;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
+	float AttackRange;
 };

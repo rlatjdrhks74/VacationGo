@@ -1,4 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/* VGCharacterSetting.h
+ * Description : 캐릭터 에셋 관리
+ * ver 0.1 : 코드 구성 - 이 창 재
+ */
 
 #pragma once
 

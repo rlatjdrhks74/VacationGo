@@ -1,6 +1,7 @@
 /* VGWeapon.cpp
  * Description : 캐릭터가 드는 무기에 대한 액터
  * ver 0.1 : 액터 초기 구성 - 이 창 재
+ * ver 0.2 : 무기를 장착시에 공격 범위가 증가 - 이 창 재
  */
 
 #include "VGWeapon.h"
@@ -24,6 +25,13 @@ AVGWeapon::AVGWeapon()
 	// 충돌 설정을 NoCollision으로 설정
 	Weapon->SetCollisionProfileName(TEXT("NoCollision"));
 
+	// 무기 장착시에 공격 범위가 증가
+	AttackRange = 150.0f;
+}
+
+float AVGWeapon::GetAttackRange() const
+{
+	return AttackRange;
 }
 
 // Called when the game starts or when spawned

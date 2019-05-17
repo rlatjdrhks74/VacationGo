@@ -35,6 +35,10 @@ AVGAIController::AVGAIController()
 void AVGAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+}
+
+void AVGAIController::RunAI()
+{
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
 		Blackboard->SetValueAsVector(HomePosKey, GetPawn()->GetActorLocation());
@@ -44,3 +48,13 @@ void AVGAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+
+void AVGAIController::StopAI()
+{
+	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (nullptr != BehaviorTreeComponent)
+	{
+		BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
+	}
+}
+
