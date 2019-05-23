@@ -186,12 +186,18 @@ void AVGCharacter::SetCharacterState(ECharacterState NewState)
 			SetControlMode(EControlMode::GTA);
 			GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 			EnableInput(VGPlayerController);
+			// HP바는 플레이어에게 현재상으로는 필요없다고 가정
+			HPBarWidget->SetHiddenInGame(true);
 		}
 		else
 		{
 			SetControlMode(EControlMode::NPC);
 			GetCharacterMovement()->MaxWalkSpeed = 60.0f;
 			VGAIController->RunAI();
+			// HP바는 인간형 AI에게도 필요없다.
+			HPBarWidget->SetHiddenInGame(true);
+			// 인간형 AI는 공격당하지 않는다고 가정
+			bCanBeDamaged = false;
 		}
 
 		break;

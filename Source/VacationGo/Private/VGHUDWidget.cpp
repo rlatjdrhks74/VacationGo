@@ -1,4 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/* VGHUBWidget.cpp
+ * Description : 게임 기본 UI 관리를 위한 허브 위젯
+ * ver 0.1 : 허브 위젯 구성 - 이 창 재
+ */
 
 
 #include "VGHUDWidget.h"
@@ -35,12 +38,6 @@ void UVGHUDWidget::NativeConstruct()
 
 	PlayerLevel = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtLevel")));
 	ABCHECK(nullptr != PlayerLevel);
-
-	CurrentScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtCurrentScore")));
-	ABCHECK(nullptr != CurrentScore);
-
-	HighScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtHighScore")));
-	ABCHECK(nullptr != HighScore);
 }
 
 void UVGHUDWidget::UpdateCharacterStat()
@@ -57,6 +54,4 @@ void UVGHUDWidget::UpdatePlayerState()
 	ExpBar->SetPercent(CurrentPlayerState->GetExpRatio());
 	PlayerName->SetText(FText::FromString(CurrentPlayerState->GetPlayerName()));
 	PlayerLevel->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCharacterLevel())));
-	CurrentScore->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetGameScore())));
-	HighScore->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetGameHighScore())));
 }

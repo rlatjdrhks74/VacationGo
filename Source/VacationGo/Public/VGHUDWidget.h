@@ -1,4 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/* VGHUBWidget.h
+ * Description : 게임 기본 UI 관리를 위한 허브 위젯
+ * ver 0.1 : 허브 위젯 구성 - 이 창 재
+ */
 
 #pragma once
 
@@ -38,10 +41,4 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* PlayerLevel;
-
-	UPROPERTY()
-	class UTextBlock* CurrentScore;
-
-	UPROPERTY()
-	class UTextBlock* HighScore;
 };

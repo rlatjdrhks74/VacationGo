@@ -70,8 +70,9 @@ void AVGItemBox::OnCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	{
 		if (VGCharacter->CanSetWeapon())
 		{
-			auto NewWeapon = GetWorld()->SpawnActor<AVGWeapon>(WeaponItemClass, FVector::ZeroVector, FRotator::ZeroRotator);
-			VGCharacter->SetWeapon(NewWeapon);
+			// 무기 장착 보류
+			//auto NewWeapon = GetWorld()->SpawnActor<AVGWeapon>(WeaponItemClass, FVector::ZeroVector, FRotator::ZeroRotator);
+			//VGCharacter->SetWeapon(NewWeapon);
 			Effect->Activate(true);
 			Box->SetHiddenInGame(true, true);
 			SetActorEnableCollision(false);
