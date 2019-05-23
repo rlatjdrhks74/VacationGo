@@ -4,7 +4,7 @@
 
 서울과학기술대학교 컴퓨터게임프로그래밍 프로젝트용입니다.
 
-Vacation GO!는 **Unreal Engine 4.22.1**버전을 기준으로 제작되었습니다.
+Vacation GO!는 **Unreal Engine 4.22.2**버전을 기준으로 제작되었습니다.
 
 
 
