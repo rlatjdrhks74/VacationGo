@@ -12,7 +12,7 @@
 AVGGameMode::AVGGameMode()
 {
 	// 각각의 클래스 속성 값을 해당 클래스 값으로 변경
-	DefaultPawnClass = AVGCharacter::StaticClass();
+	DefaultPawnClass = LoadObject<UClass>(AVGCharacter::StaticClass(), TEXT("/Game/Book/Blueprints/BP_VGCharacter.BP_VGCharacter_C"));
 	PlayerControllerClass = AVGPlayerController::StaticClass();
 	PlayerStateClass = AVGPlayerState::StaticClass();
 	GameStateClass = AVGGameState::StaticClass();
