@@ -58,7 +58,7 @@ void UVGHUDWidget::UpdatePlayerState()
 	{
 		MapName->SetText(FText::FromString("Cave"));
 	}
-	else if (GetWorld()->GetMapName().Equals("UEDPIE_0_Gameplay") || GetWorld()->GetMapName().Equals("UEDPIE_0_GameplayB") || GetWorld()->GetMapName().Equals("UEDPIE_0_GameplayC"))
+	else if (GetWorld()->GetMapName().Equals("UEDPIE_0_Gameplay") || GetWorld()->GetMapName().Equals("UEDPIE_0_GameplayB") || GetWorld()->GetMapName().Equals("UEDPIE_0_GameplayC") || GetWorld()->GetMapName().Equals("UEDPIE_0_GameplayD"))
 	{
 		MapName->SetText(FText::FromString("River Mountain"));
 	}
@@ -77,6 +77,10 @@ void UVGHUDWidget::UpdatePlayerState()
 	else if (GetWorld()->GetMapName().Equals("UEDPIE_0_Outside2"))
 	{
 		MapName->SetText(FText::FromString("Wretched Automatons"));
+	}
+	else if (GetWorld()->GetMapName().Equals("UEDPIE_0_Ocean"))
+	{
+		MapName->SetText(FText::FromString("Ocean Paradise"));
 	}
 	else
 	{
