@@ -14,6 +14,7 @@
  * ver 0.88 : NPC 에셋 랜덤화 - 이 창 재
  * ver 0.9 : 각 스테이트별 기본 로직 및 함수 구현 - 이 창 재
  * ver 0.92 : 플레이어 스테이트 반영 및 HUB에 연동 - 이 창 재
+ * ver 0.95 : 공격시 이동 속도 차이를 두어 모션 보완 - 이 창 재
  */
 
 #include "VGCharacter.h"
@@ -184,7 +185,6 @@ void AVGCharacter::SetCharacterState(ECharacterState NewState)
 		if (bIsPlayer)
 		{
 			SetControlMode(EControlMode::GTA);
-			GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 			EnableInput(VGPlayerController);
 			// HP바는 플레이어에게 현재상으로는 필요없다고 가정
 			HPBarWidget->SetHiddenInGame(true);
@@ -410,6 +410,15 @@ void AVGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AVGCharacter::LookUp);
 }
 
+void AVGCharacter::SetExp(int32 exp)
+{
+	if (GetController()->IsPlayerController())
+	{
+		auto VGPlayerController = Cast<AVGPlayerController>(GetController());
+		VGPlayerController->ExpUp(exp);
+	}
+}
+
 // 무기 장착 가능 함수
 bool AVGCharacter::CanSetWeapon()
 {
@@ -440,6 +449,14 @@ void AVGCharacter::SetWeapon(AVGWeapon* NewWeapon)
 // 폰의 기본 동작 입력처리 함수
 void AVGCharacter::UpDown(float NewAxisValue)
 {
+	if (IsAttacking)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
 	switch (CurrentControlMode)
 	{
 	case EControlMode::GTA:
@@ -453,6 +470,14 @@ void AVGCharacter::UpDown(float NewAxisValue)
 
 void AVGCharacter::LeftRight(float NewAxisValue)
 {
+	if (IsAttacking)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	}
 	switch (CurrentControlMode)
 	{
 	case EControlMode::GTA:

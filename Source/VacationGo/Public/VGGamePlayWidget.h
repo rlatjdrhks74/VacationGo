@@ -1,6 +1,5 @@
 /* VGGamePlayWidget.h
  * Description : UI가 공용으로 사용할 기본 클래스
- * ver 0.1 : 게임 플레이 위젯 구성 - 이 창 재
  */
 
 #pragma once

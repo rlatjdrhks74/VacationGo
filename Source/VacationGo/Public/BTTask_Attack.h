@@ -1,6 +1,5 @@
 /* BTTask_Attack.h
  * Description : 공격 태스크
- * ver 0.1 : 초기 구성 - 이 창 재
  */
 
 #pragma once

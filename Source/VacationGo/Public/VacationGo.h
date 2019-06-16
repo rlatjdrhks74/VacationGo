@@ -1,7 +1,5 @@
 /* VacationGo.cpp
  * Description : 프로젝트 설정
- * ver 0.1 : 초기 구성 및 로그 기능 추가 - 이 창 재
- * ver 0.2 : 캐릭터의 스테이트 설정 - 이 창 재
  */
 
 #pragma once

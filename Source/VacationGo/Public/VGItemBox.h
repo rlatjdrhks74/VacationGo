@@ -1,7 +1,5 @@
 /* VGItemBox.h
  * Description : 아이템 박스 액터
- * ver 0.1 : 액터 초기 구성 - 이 창 재
- * ver 0.15 : 캐릭터와 박스사이의 콜리전 디텍션 설정 - 이 창 재
  */
 
 #pragma once

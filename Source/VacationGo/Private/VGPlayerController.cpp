@@ -9,6 +9,7 @@
 #include "VGPlayerState.h"
 #include "VGCharacter.h"
 #include "VGGamePlayWidget.h"
+#include <VGLevelTransferVolume.h>
 
 AVGPlayerController::AVGPlayerController()
 {
@@ -56,7 +57,7 @@ void AVGPlayerController::BeginPlay()
 	HUDWidget = CreateWidget<UVGHUDWidget>(this, HUDWidgetClass);
 	ABCHECK(nullptr != HUDWidget);
 	HUDWidget->AddToViewport(1);
-	
+
 	// 스텟 컴포넌트 정보를 HUB에 연동
 	VGPlayerState = Cast<AVGPlayerState>(PlayerState);
 	ABCHECK(nullptr != VGPlayerState);
@@ -72,6 +73,11 @@ UVGHUDWidget* AVGPlayerController::GetHUDWidgetWithCreation()
 void AVGPlayerController::NPCKill(AVGCharacter* KilledNPC) const
 {
 	VGPlayerState->AddExp(KilledNPC->GetExp());
+}
+
+void AVGPlayerController::ExpUp(int32 exp) const
+{
+	VGPlayerState->AddExp(exp);
 }
 
 void AVGPlayerController::AddGameScore() const

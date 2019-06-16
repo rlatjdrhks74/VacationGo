@@ -1,6 +1,5 @@
 /* VGHUBWidget.h
  * Description : 게임 기본 UI 관리를 위한 허브 위젯
- * ver 0.1 : 허브 위젯 구성 - 이 창 재
  */
 
 #pragma once
@@ -38,6 +37,9 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* PlayerName;
+
+	UPROPERTY()
+	class UTextBlock* MapName;
 
 	UPROPERTY()
 	class UTextBlock* PlayerLevel;

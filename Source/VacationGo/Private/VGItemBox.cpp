@@ -2,6 +2,8 @@
  * Description : 아이템 박스 액터
  * ver 0.1 : 액터 초기 구성 - 이 창 재
  * ver 0.15 : 캐릭터와 박스사이의 콜리전 디텍션 설정 - 이 창 재
+ * ver 0.3 : 아이템 박스 획득시 무기가 들려있지 않으면 랜덤한 무기를 쥐도록 구현 - 이 창 재
+ * ver 0.5 : 사냥 컨텐츠 삭제로 무기 대신 경험치가 올라가도록 구현 - 이 창 재
  */
 
 #include "VGItemBox.h"
@@ -65,6 +67,13 @@ void AVGItemBox::OnCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 	auto VGCharacter = Cast<AVGCharacter>(OtherActor);
 	ABCHECK(nullptr != VGCharacter);
+
+	if (VGCharacter->GetController()->IsPlayerController())
+	{
+		int32 Exp = VGCharacter->GetExp();
+		VGCharacter->SetExp(Exp);
+		ABLOG(Warning, TEXT("This Character is Player Controller. Exp is %d"), VGCharacter->GetExp());
+	}
 
 	if (nullptr != VGCharacter && nullptr != WeaponItemClass)
 	{

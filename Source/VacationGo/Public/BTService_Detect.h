@@ -1,6 +1,5 @@
 /* BTService_Detect.h
  * Description : NPC 반경 이내 캐릭터가 있는지 감지
- * ver 0.1 : 초기 구성 - 이 창 재
  */
 
 #pragma once

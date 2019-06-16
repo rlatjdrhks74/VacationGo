@@ -1,6 +1,5 @@
 /* VGSaveGame.h
  * Description : 게임을 저장하고 불러들이는 기능 구현을 위한 세이브 게임
- * ver 0.1 : 세이브 게임 구성 - 이 창 재
  */
 
 #pragma once
@@ -20,18 +19,21 @@ class VACATIONGO_API UVGSaveGame : public USaveGame
 public:
 	UVGSaveGame();
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
 	int32 Level;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
 	int32 Exp;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
 	FString PlayerName;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
+	FString SaveMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
 	int32 HighScore;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
 	int32 CharacterIndex;
 };

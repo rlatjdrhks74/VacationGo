@@ -1,6 +1,5 @@
 /* VGGameMode.h
  * Description : 게임의 규칙을 관리하는 게임모드
- * ver 0.1 : 게임모드 구성 - 이 창 재
  */
 
 #pragma once

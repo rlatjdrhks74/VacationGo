@@ -1,7 +1,5 @@
 /* VGPlayerController.h
  * Description : 플레이어를 대변하여 폰을 조종하는 컨트롤러
- * ver 0.1 : 플레이어 컨트롤러 초기 구성 - 이 창 재
- * ver 0.15 : 허브위젯 지원 코드 추가 - 이 창 재
  */
 #pragma once
 
@@ -25,6 +23,7 @@ public:
 
 	class UVGHUDWidget* GetHUDWidgetWithCreation();
 	void NPCKill(class AVGCharacter* KilledNPC) const;
+	void ExpUp(int32 exp) const;
 	void AddGameScore() const;
 	void ChangeInputMode(bool bGameMode = true);
 
@@ -46,6 +45,9 @@ private:
 
 	UPROPERTY()
 	class AVGPlayerState* VGPlayerState;
+
+	UPROPERTY()
+	class AVGLevelTransferVolume* VGLevelTransferVolume;
 
 	UPROPERTY()
 	class UVGGamePlayWidget* MenuWidget;

@@ -1,6 +1,5 @@
 /* BTDecorator_IsInAttackRange.h
  * Description : NPC가 공격이 가능할 경우 공격
- * ver 0.1 : 초기 구성 - 이 창 재
  */
 
 #pragma once

@@ -1,6 +1,5 @@
 /* Fountain.h
  * Description : 분수대 액터 코드
- * ver 0.1 : 분수대 초기 구성 - 이 창 재
  */
 
 #pragma once

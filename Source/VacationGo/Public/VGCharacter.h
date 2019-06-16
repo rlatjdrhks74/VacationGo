@@ -1,15 +1,5 @@
 /* VGCharacter.h
  * Description : 인간형 폰을 효과적으로 제작하기 위한 모델
- * ver 0.1 : 캐릭터 초기 구성 및 컨트롤을 통한 움직임 구성 - 이 창 재
- * ver 0.2 : GTA 방식 및 디아블로 방식 컨트롤 구현 - 이 창 재
- * ver 0.3 : 점프 및 공격 및 콤보 구현 - 이 창 재
- * ver 0.5 : 충돌 설정 및 어택 범위 표현, 데미지 전달 설정 - 이 창 재
- * ver 0.6 : 아이템 박스와 충돌시 기존 무기가 없으면 무기가 쥐어지도록 설정 - 이 창 재
- * ver 0.65 : 캐릭터 스텟을 게임 인스턴스에 전달하도록 설정 - 이 창 재
- * ver 0.7 : HP바 구현
- * ver 0.85 : NPC를 위한 동작 컨트롤 설정 - 이 창 재
- * ver 0.86 : 공격 태스크를 위한 델리게이트 선언 - 이 창 재
- * ver 0.9 : 각 스테이트별 기본 로직 및 함수 구현 - 이 창 재
  */
 
 #pragma once
@@ -31,7 +21,9 @@ public:
 	void SetCharacterState(ECharacterState NewState);
 	ECharacterState GetCharacterState() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Exp")
 	int32 GetExp() const;
+
 	float GetFinalAttackRange() const;
 
 protected:
@@ -66,6 +58,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool CanSetWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Exp")
+	void SetExp(int32 exp);
+
 	void SetWeapon(class AVGWeapon* NewWeapon);
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)

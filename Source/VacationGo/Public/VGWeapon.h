@@ -1,7 +1,5 @@
 /* VGWeapon.h
  * Description : 캐릭터가 드는 무기에 대한 액터
- * ver 0.1 : 액터 초기 구성 - 이 창 재
- * ver 0.2 : 무기를 장착시에 공격 범위가 증가 - 이 창 재
  */
 
 #pragma once

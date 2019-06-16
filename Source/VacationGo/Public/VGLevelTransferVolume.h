@@ -1,6 +1,5 @@
 /* VGLevelTransferVolume.h
  * Description : 레벨간 이동을 위한 볼륨
- * ver 0.1 : transfer 볼륨 구성 - 이 창 재
  */
 
 #pragma once
@@ -17,6 +16,7 @@ class VACATIONGO_API AVGLevelTransferVolume : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AVGLevelTransferVolume();
+	void BindPlayerState(class AVGPlayerState* PlayerState);
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,9 +24,16 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 private:
+
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	FName TransferLevelName;
 
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	int32 ToggleHidden;
+
 	UPROPERTY()
 	class UBoxComponent* TransferVolume;
+
+	UPROPERTY()
+	class AVGPlayerState* VGPlayerState;
 };

@@ -1,6 +1,7 @@
 /* VGPlayerState.cpp
  * Description : 플레이어의 정보를 관리하기 위한 플레이어 스테이트
  * ver 0.1 : PlayerState 구성 - 이 창 재
+ * ver 0.2 : 현재 레벨 저장 업데이트 - 이 창 재
  */
 
 #include "VGPlayerState.h"
@@ -52,6 +53,8 @@ void AVGPlayerState::InitPlayerData()
 	GameHighScore = VGSaveGame->HighScore;
 	Exp = VGSaveGame->Exp;
 	CharacterIndex = VGSaveGame->CharacterIndex;
+	SaveMap = VGSaveGame->SaveMap;
+	ABLOG(Warning, TEXT("FUckingSHIT? : %s"), *SaveMap);
 	SavePlayerData();
 }
 
@@ -63,7 +66,8 @@ void AVGPlayerState::SavePlayerData()
 	NewPlayerData->Exp = Exp;
 	NewPlayerData->HighScore = GameHighScore;
 	NewPlayerData->CharacterIndex = CharacterIndex;
-
+	NewPlayerData->SaveMap = GetWorld()->GetMapName().RightChop(9);
+	ABLOG(Warning, TEXT("SHITFUCKING? : %s"), *NewPlayerData->SaveMap);
 	if (!UGameplayStatics::SaveGameToSlot(NewPlayerData, SaveSlotName, 0))
 	{
 		ABLOG(Error, TEXT("SaveGame Error!"));

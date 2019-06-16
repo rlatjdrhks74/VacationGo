@@ -1,6 +1,5 @@
 /* BTTask_FindPatrolPos.h
  * Description : NPC가 이동할 위치 데이터 생성
- * ver 0.1 : 로직 구현 - 이 창 재
  */
 
 #pragma once

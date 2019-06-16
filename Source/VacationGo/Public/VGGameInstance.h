@@ -1,6 +1,5 @@
 /* VGGameInstance.h
  * Description : 캐릭터 스텟을 관리하기 위한 게임 인스턴스
- * ver 0.1 : 게임 인스턴스 초기 구성 - 이 창 재
  */
 
 #pragma once
