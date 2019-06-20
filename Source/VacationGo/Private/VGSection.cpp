@@ -1,5 +1,5 @@
 /* VGSection.cpp
- * Description : 무한맵 생성을 위한 섹션 코드
+ * Description : Dev맵의 무한맵 생성을 위한 섹션 코드
  * ver 0.1 : 초기 구성 - 이 창 재
  */
 #include "VGSection.h"

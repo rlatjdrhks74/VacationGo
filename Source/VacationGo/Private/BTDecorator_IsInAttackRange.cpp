@@ -1,5 +1,5 @@
 /* BTDecorator_IsInAttackRange.cpp
- * Description : NPC가 공격이 가능할 경우 공격
+ * Description : NPC가 공격이 가능할 경우 공격을 위한 비헤이비어 트리 코드
  * ver 0.1 : 초기 구성 - 이 창 재
  */
 

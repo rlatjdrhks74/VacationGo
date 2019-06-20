@@ -112,6 +112,7 @@ void AVGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 캐릭터가 플레이어인지 NPC인지에 따라 각자의 컨트롤러 구성
 	bIsPlayer = IsPlayerControlled();
 	if (bIsPlayer)
 	{
@@ -124,8 +125,10 @@ void AVGCharacter::BeginPlay()
 		ABCHECK(nullptr != VGAIController);
 	}
 
+	// 캐릭터 에셋이 설정된 CharacterSetting을 불러온다.
 	auto DefaultSetting = GetDefault<UVGCharacterSetting>();
 
+	// 플레이어인 경우 세이브데이터에서 사용자가 선택했던 에셋 인덱스를 불러와 해당 에셋을 세팅
 	if (bIsPlayer)
 	{
 		auto VGPlayerState = Cast<AVGPlayerState>(GetPlayerState());
@@ -134,6 +137,7 @@ void AVGCharacter::BeginPlay()
 	}
 	else
 	{
+		// AI인 경우 랜덤한 에셋 번호를 생성하여 세팅
 		AssetIndex = FMath::RandRange(0, DefaultSetting->CharacterAssets.Num() - 1);
 	}
 
@@ -157,6 +161,7 @@ void AVGCharacter::SetCharacterState(ECharacterState NewState)
 		{
 			DisableInput(VGPlayerController);
 
+			// 게임 UI HUB를 짜는데 쓰일 캐릭터 스텟을 바인딩
 			VGPlayerController->GetHUDWidgetWithCreation()->BindCharacterStat(CharacterStat);
 
 			auto VGPlayerState = Cast<AVGPlayerState>(GetPlayerState());
@@ -171,7 +176,8 @@ void AVGCharacter::SetCharacterState(ECharacterState NewState)
 	case ECharacterState::READY:
 	{
 		SetActorHiddenInGame(false);
-		HPBarWidget->SetHiddenInGame(false);
+		// HP바는 현재상으로는 필요없다고 가정
+		HPBarWidget->SetHiddenInGame(true);
 		bCanBeDamaged = true;
 
 		CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
@@ -186,16 +192,12 @@ void AVGCharacter::SetCharacterState(ECharacterState NewState)
 		{
 			SetControlMode(EControlMode::GTA);
 			EnableInput(VGPlayerController);
-			// HP바는 플레이어에게 현재상으로는 필요없다고 가정
-			HPBarWidget->SetHiddenInGame(true);
 		}
 		else
 		{
 			SetControlMode(EControlMode::NPC);
 			GetCharacterMovement()->MaxWalkSpeed = 60.0f;
 			VGAIController->RunAI();
-			// HP바는 인간형 AI에게도 필요없다.
-			HPBarWidget->SetHiddenInGame(true);
 			// 인간형 AI는 공격당하지 않는다고 가정
 			bCanBeDamaged = false;
 		}
@@ -252,14 +254,14 @@ float AVGCharacter::GetFinalAttackRange() const
 	return (nullptr != CurrentWeapon) ? CurrentWeapon->GetAttackRange() : AttackRange;
 }
 
-// 컨트롤 모드 변경 기능
+// 카메라 방향 및 컨트롤 모드 변경 기능
 void AVGCharacter::SetControlMode(EControlMode NewControlMode)
 {
 	CurrentControlMode = NewControlMode;
 
 	switch (CurrentControlMode)
 	{
-	// GTA 방식
+	// GTA 방식 (카메라 회전)
 	case EControlMode::GTA:
 		//SpringArm->TargetArmLength = 450.0f;
 		//SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
@@ -274,7 +276,7 @@ void AVGCharacter::SetControlMode(EControlMode NewControlMode)
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		break;
-	// 디아블로 방식
+	// 디아블로 방식 (카메라 회전 고정)
 	case EControlMode::DIABLO:
 		//SpringArm->TargetArmLength = 800.0f;
 		//SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
@@ -335,6 +337,7 @@ void AVGCharacter::PostInitializeComponents()
 
 	VGAnim->OnMontageEnded.AddDynamic(this, &AVGCharacter::OnAttackMontageEnded);
 
+	// 콤보 구현
 	VGAnim->OnNextAttackCheck.AddLambda([this]() -> void {
 
 		ABLOG(Warning, TEXT("OnNextAttackCheck"));
@@ -410,6 +413,7 @@ void AVGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AVGCharacter::LookUp);
 }
 
+// 경험치 업
 void AVGCharacter::SetExp(int32 exp)
 {
 	if (GetController()->IsPlayerController())
@@ -446,7 +450,7 @@ void AVGCharacter::SetWeapon(AVGWeapon* NewWeapon)
 	}
 }
 
-// 폰의 기본 동작 입력처리 함수
+// 폰의 기본 동작 - 위 아래 이동
 void AVGCharacter::UpDown(float NewAxisValue)
 {
 	if (IsAttacking)
@@ -468,6 +472,7 @@ void AVGCharacter::UpDown(float NewAxisValue)
 	}
 }
 
+// 폰의 기본 동작 - 왼쪽 오른쪽 이동
 void AVGCharacter::LeftRight(float NewAxisValue)
 {
 	if (IsAttacking)
@@ -489,6 +494,7 @@ void AVGCharacter::LeftRight(float NewAxisValue)
 	}
 }
 
+// 폰의 기본 동작 - 회전
 void AVGCharacter::Turn(float NewAxisValue)
 {
 	switch (CurrentControlMode)
@@ -510,7 +516,7 @@ void AVGCharacter::LookUp(float NewAxisValue)
 }
 
 
-// 특수 입력 처리 함수
+// 특수 입력 - 카메라 방향 변경
 void AVGCharacter::ViewChange()
 {
 	switch (CurrentControlMode)
@@ -526,6 +532,7 @@ void AVGCharacter::ViewChange()
 	}
 }
 
+// 특수 입력 - 공격
 void AVGCharacter::Attack()
 {
 	if (IsAttacking)

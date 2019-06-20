@@ -19,12 +19,14 @@ const FName AVGAIController::TargetKey(TEXT("Target"));
 
 AVGAIController::AVGAIController()
 {
+	// 블랙보드와 연결
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/Book/AI/BB_VGCharacter.BB_VGCharacter"));
 	if (BBObject.Succeeded())
 	{
 		BBAsset = BBObject.Object;
 	}
 
+	// 비헤이비어 트리와 연결
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/Book/AI/BT_VGCharacter.BT_VGCharacter"));
 	if (BTObject.Succeeded())
 	{

@@ -13,12 +13,14 @@
 
 AVGPlayerController::AVGPlayerController()
 {
+	// 기본 게임 UI
 	static ConstructorHelpers::FClassFinder<UVGHUDWidget> UI_HUD_C(TEXT("/Game/Book/UI/UI_HUD.UI_HUD_C"));
 	if (UI_HUD_C.Succeeded())
 	{
 		HUDWidgetClass = UI_HUD_C.Class;
 	}
 
+	// 게임 Pause시 등장하는 UI
 	static ConstructorHelpers::FClassFinder<UVGGamePlayWidget> UI_MENU_C(TEXT("/Game/Book/UI/UI_Menu.UI_Menu_C"));
 	if (UI_MENU_C.Succeeded())
 	{
@@ -42,6 +44,7 @@ void AVGPlayerController::OnPossess(APawn* aPawn)
 void AVGPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+	// Game Pause Input 바인딩
 	InputComponent->BindAction(TEXT("GamePause"), EInputEvent::IE_Pressed, this, &AVGPlayerController::OnGamePause);
 }
 
@@ -65,26 +68,31 @@ void AVGPlayerController::BeginPlay()
 	VGPlayerState->OnPlayerStateChanged.Broadcast();
 }
 
+// 허브 위젯
 UVGHUDWidget* AVGPlayerController::GetHUDWidgetWithCreation()
 {
 	return HUDWidget;
 }
 
+// NPC 킬시 경험치 업 -- 사용 보류
 void AVGPlayerController::NPCKill(AVGCharacter* KilledNPC) const
 {
 	VGPlayerState->AddExp(KilledNPC->GetExp());
 }
 
+// 경험치 업
 void AVGPlayerController::ExpUp(int32 exp) const
 {
 	VGPlayerState->AddExp(exp);
 }
 
+// 게임 스코어 추가 -- 사용 보류
 void AVGPlayerController::AddGameScore() const
 {
 	VGPlayerState->AddGameScore();
 }
 
+// 게임중일때와 UI 메뉴에 있을때에 따른 Input Mode 변환 함수
 void AVGPlayerController::ChangeInputMode(bool bGameMode)
 {
 	if (bGameMode)
@@ -99,6 +107,7 @@ void AVGPlayerController::ChangeInputMode(bool bGameMode)
 	}
 }
 
+// Game Pause 구현 함수
 void AVGPlayerController::OnGamePause()
 {
 	MenuWidget = CreateWidget<UVGGamePlayWidget>(this, MenuWidgetClass);

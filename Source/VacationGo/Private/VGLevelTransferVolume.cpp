@@ -26,6 +26,8 @@ void AVGLevelTransferVolume::BeginPlay()
 	Super::BeginPlay();
 }
 
+// 현 플레이어의 스텟을 체킹한 후에 
+// 해당 볼륨이 요구하는 레벨 이상이 될 시에만 맵 이동 허용
 void AVGLevelTransferVolume::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	APawn* Pawn = Cast<APawn>(OtherActor);

@@ -1,5 +1,5 @@
 /* VGCharacterSelectWidget.cpp
- * Description : 캐릭터 선택화면 구성을 위한 위젯
+ * Description : 캐릭터 선택화면 UI 구성을 위한 위젯
  * ver 0.1 : 초기 구성 - 이 창 재
  */
 

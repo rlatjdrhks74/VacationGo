@@ -24,6 +24,7 @@ AVGItemBox::AVGItemBox()
 	Box->SetupAttachment(RootComponent);
 	Effect->SetupAttachment(RootComponent);
 
+	// 아이템 박스 메시를 불러와 설정
 	Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_BOX(TEXT("/Game/InfinityBladeGrassLands/Environments/Breakables/StaticMesh/Box/SM_Env_Breakables_Box1.SM_Env_Breakables_Box1"));
 
@@ -32,6 +33,7 @@ AVGItemBox::AVGItemBox()
 		Box->SetStaticMesh(SM_BOX.Object);
 	}
 
+	// 아이템 박스 획득시 파티클 시스템 설정
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_CHESTOPEN(TEXT("/Game/InfinityBladeGrassLands/Effects/FX_Treasure/Chest/P_TreasureChest_Open_Mesh.P_TreasureChest_Open_Mesh"));
 
 	if (P_CHESTOPEN.Succeeded())
@@ -68,6 +70,7 @@ void AVGItemBox::OnCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	auto VGCharacter = Cast<AVGCharacter>(OtherActor);
 	ABCHECK(nullptr != VGCharacter);
 
+	// 아이템 박스 획득시 경험치가 증가하도록 구현
 	if (VGCharacter->GetController()->IsPlayerController())
 	{
 		int32 Exp = VGCharacter->GetExp();

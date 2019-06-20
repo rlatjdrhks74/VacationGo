@@ -1,5 +1,5 @@
 /* BTTask_TurnToTarget.cpp
- * Description : 공격하면서 동시에 플레이어를 향해 회전
+ * Description : 공격하면서 동시에 플레이어를 향해 회전을 위한 별도의 비헤이비어 트리 코드
  * ver 0.1 : 초기 구성 - 이 창 재
  */
 

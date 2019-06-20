@@ -13,6 +13,7 @@ UVGAnimInstance::UVGAnimInstance()
 	CurrentPawnSpeed = 0.0f;
 	IsInAir = false;
 	IsDead = false;
+	// 공격 모션을 위한 애니메이션 몽타주
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Book/Animations/SK_Mannequin_Skeleton_Montage.SK_Mannequin_Skeleton_Montage"));
 
 	if (ATTACK_MONTAGE.Succeeded())

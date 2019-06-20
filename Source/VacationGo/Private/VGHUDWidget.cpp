@@ -15,6 +15,7 @@ void UVGHUDWidget::BindCharacterStat(UVGCharacterStatComponent* CharacterStat)
 {
 	ABCHECK(nullptr != CharacterStat);
 	CurrentCharacterStat = CharacterStat;
+	// HP가 변경 될 시 UI 업데이트
 	CharacterStat->OnHPChanged.AddUObject(this, &UVGHUDWidget::UpdateCharacterStat);
 }
 
@@ -54,6 +55,7 @@ void UVGHUDWidget::UpdatePlayerState()
 {
 	ABCHECK(CurrentPlayerState.IsValid());
 
+	// 현 맵의 이름을 UI에 표시토록 하기 위한 코드
 	if (GetWorld()->GetMapName().Equals("UEDPIE_0_Cave") || GetWorld()->GetMapName().Equals("UEDPIE_0_CaveB"))
 	{
 		MapName->SetText(FText::FromString("Cave"));
@@ -87,6 +89,7 @@ void UVGHUDWidget::UpdatePlayerState()
 		MapName->SetText(FText::FromString(GetWorld()->GetMapName()));
 	}
 
+	// 경험치와 이름, 현 플레이어 레벨을 표시
 	ExpBar->SetPercent(CurrentPlayerState->GetExpRatio());
 	PlayerName->SetText(FText::FromString(CurrentPlayerState->GetPlayerName()));
 	PlayerLevel->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCharacterLevel())));

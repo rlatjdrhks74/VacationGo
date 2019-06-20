@@ -1,5 +1,5 @@
 /* BTTask_Attack.cpp
- * Description : 공격 태스크
+ * Description : 공격 태스크를 위한 비헤이비어 트리 코드
  * ver 0.1 : 초기 구성 - 이 창 재
  */
 

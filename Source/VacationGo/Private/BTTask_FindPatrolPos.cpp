@@ -1,5 +1,5 @@
 /* BTTask_FindPatrolPos.cpp
- * Description : NPC가 이동할 위치 데이터 생성
+ * Description : NPC가 이동할 위치 데이터 생성을 위한 비헤이비어 트리 코드
  * ver 0.1 : 로직 구현 - 이 창 재
  */
 
@@ -22,6 +22,7 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 	if (nullptr == ControllingPawn)
 		return EBTNodeResult::Failed;
 
+	// 언리얼 4.20 이상 버전부턴 다음과 같이 변경....
 	UNavigationSystemV1 * NavSystem = UNavigationSystemV1::GetNavigationSystem(ControllingPawn->GetWorld());
 	if (nullptr == NavSystem)
 		return EBTNodeResult::Failed;

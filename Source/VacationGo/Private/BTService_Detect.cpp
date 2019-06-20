@@ -1,7 +1,8 @@
 /* BTService_Detect.cpp
- * Description : NPC 반경 이내 캐릭터가 있는지 감지
+ * Description : NPC 반경 이내 플레이어가 있는지 감지를 위한 비헤이비어 트리 코드
  * ver 0.1 : 초기 구성 - 이 창 재
  * ver 0.15 : 타겟이 반경 내에 있으면 초록색 구 생성 및 플레이어를 따라다니도록 설정 - 이 창 재
+ * ver 0.2 : 회화를 구현할 수 있도록 타겟을 발견하면 타겟을 향해 다가간 뒤 멈추도록 설정 - 이 창 재
  */
 
 #include "BTService_Detect.h"
@@ -47,7 +48,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			AVGCharacter* VGCharacter = Cast<AVGCharacter>(OverlapResult.GetActor());
 			if (VGCharacter && VGCharacter->GetController()->IsPlayerController())
 			{
-				// 기본 동작으로 플레이어를 탐지하면 플레이어를 따라다니도록 설정. 
+				// 기본 동작으로 플레이어를 탐지하면 플레이어를 향해 다가간다.
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(AVGAIController::TargetKey, VGCharacter);
 				DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
 

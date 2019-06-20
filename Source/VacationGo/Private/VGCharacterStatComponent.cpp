@@ -37,6 +37,7 @@ void UVGCharacterStatComponent::InitializeComponent()
 	SetNewLevel(Level);
 }
 
+// 레벨이 변경되면 해당 레벨에 맞는 캐릭터 스텟 데이터를 불러온다.
 void UVGCharacterStatComponent::SetNewLevel(int32 NewLevel)
 {
 	auto VGGameInstance = Cast<UVGGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -54,12 +55,14 @@ void UVGCharacterStatComponent::SetNewLevel(int32 NewLevel)
 	}
 }
 
+// 데미지 처리 함수
 void UVGCharacterStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(nullptr != CurrentStatData);
 	SetHP(FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP));
 }
 
+// HP 변경 처리 함수
 void UVGCharacterStatComponent::SetHP(float NewHP)
 {
 	CurrentHP = NewHP;
